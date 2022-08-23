@@ -173,7 +173,7 @@ class ChatRepository {
     required BuildContext context,
     required File file,
     required String reciverUserid,
-    required UserModel senderUserData,
+    
   }) async {
     try {} catch (e) {
       showSnakBar(context: context, content: e.toString());
