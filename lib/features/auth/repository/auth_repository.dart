@@ -34,6 +34,7 @@ class AuthRepository {
   }
 
   AuthRepository({required this.auth, required this.firestore});
+
   void signInWithPhone(BuildContext context, String phoneNumber) async {
     try {
       await auth.verifyPhoneNumber(
