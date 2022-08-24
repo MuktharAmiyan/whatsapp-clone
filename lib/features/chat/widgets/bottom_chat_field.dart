@@ -24,8 +24,6 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
       ref.read(chatControllerprovider).sendTextMessage(
           context, _messageController.text.trim(), widget.reciverUserId);
     }
-
-    _messageController.clear();
   }
 
   @override
