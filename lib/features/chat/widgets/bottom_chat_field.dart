@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
@@ -24,6 +26,10 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
       ref.read(chatControllerprovider).sendTextMessage(
           context, _messageController.text.trim(), widget.reciverUserId);
     }
+    setState(() {
+      _messageController.text = '';
+      isShowSendButton = false;
+    });
   }
 
   @override

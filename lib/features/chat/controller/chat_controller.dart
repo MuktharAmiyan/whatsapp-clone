@@ -1,4 +1,5 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
@@ -24,12 +25,14 @@ class ChatController {
     String text,
     String recieverUserId,
   ) {
-    ref.read(userDataAuthProvider).whenData((value) =>
-        chatRepository.sendTextmessage(
-            context: context,
-            text: text,
-            recieverUserId: recieverUserId,
-            senderUser: value!));
+    ref.read(userDataAuthProvider).whenData((value) {
+      log(value.toString());
+      return chatRepository.sendTextmessage(
+          context: context,
+          text: text,
+          recieverUserId: recieverUserId,
+          senderUser: value!);
+    });
   }
 
   Stream<List<ChatContact>> chatContacts() {
