@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
+import 'package:whatsapp_ui/common/providers/message_replay_provider.dart';
 import 'package:whatsapp_ui/common/repository/common_firebase_repository.dart';
 import 'package:whatsapp_ui/common/util/utils.dart';
 import 'package:whatsapp_ui/info.dart';
@@ -103,14 +104,18 @@ class ChatRepository {
         .set(senderChatContact.toMap());
   }
 
-  void _saveMessageToMessageSubcollection(
-      {required String reciverUserId,
-      required String text,
-      required DateTime timeSent,
-      required String messageId,
-      required String userName,
-      required String reviverUserName,
-      required MessageEnum messageType}) async {
+  void _saveMessageToMessageSubcollection({
+    required String reciverUserId,
+    required String text,
+    required DateTime timeSent,
+    required String messageId,
+    required String userName,
+    required String reviverUserName,
+    required MessageEnum messageType,
+    required MessageReplay? messageReplay,
+    required String senderUserName,
+    required String receiverUserName,
+  }) async {
     final message = Message(
         senderId: auth.currentUser!.uid,
         reviverId: reciverUserId,
@@ -118,7 +123,16 @@ class ChatRepository {
         type: messageType,
         timeSent: timeSent,
         messageId: messageId,
-        isSeen: false);
+        isSeen: false,
+        replaiedMessage: messageReplay == null ? '' : messageReplay.message,
+        replayMessageType: messageReplay == null
+            ? MessageEnum.text
+            : messageReplay.messageEnum,
+        repliedTo: messageReplay == null
+            ? ''
+            : messageReplay.isMe
+                ? senderUserName
+                : receiverUserName);
     await firestore
         .collection('users')
         .doc(auth.currentUser!.uid)
@@ -142,7 +156,8 @@ class ChatRepository {
       {required BuildContext context,
       required String text,
       required String recieverUserId,
-      required UserModel senderUser}) async {
+      required UserModel senderUser,
+      required MessageReplay? messageReplay}) async {
     try {
       var timeSent = DateTime.now();
       UserModel reciverUserData;
@@ -158,26 +173,30 @@ class ChatRepository {
         recieverUserId,
       );
       _saveMessageToMessageSubcollection(
-          reciverUserId: recieverUserId,
-          text: text,
-          timeSent: timeSent,
-          messageId: messageId,
-          userName: senderUser.name,
-          reviverUserName: reciverUserData.name,
-          messageType: MessageEnum.text);
+        reciverUserId: recieverUserId,
+        text: text,
+        timeSent: timeSent,
+        messageId: messageId,
+        userName: senderUser.name,
+        reviverUserName: reciverUserData.name,
+        messageType: MessageEnum.text,
+        messageReplay: messageReplay,
+        receiverUserName: reciverUserData.name,
+        senderUserName: senderUser.name,
+      );
     } catch (e) {
       showSnakBar(context: context, content: e.toString());
     }
   }
 
-  void sendFileMessage({
-    required BuildContext context,
-    required File file,
-    required String reciverUserid,
-    required UserModel senderUserData,
-    required ProviderRef ref,
-    required MessageEnum messageEnum,
-  }) async {
+  void sendFileMessage(
+      {required BuildContext context,
+      required File file,
+      required String reciverUserid,
+      required UserModel senderUserData,
+      required ProviderRef ref,
+      required MessageEnum messageEnum,
+      required MessageReplay? messageReplay}) async {
     try {
       var timeSent = DateTime.now();
       var messageId = Uuid().v1();
@@ -217,13 +236,17 @@ class ChatRepository {
         reciverUserid,
       );
       _saveMessageToMessageSubcollection(
-          reciverUserId: reciverUserid,
-          text: fileUrl,
-          timeSent: timeSent,
-          messageId: messageId,
-          userName: senderUserData.name,
-          reviverUserName: reciverUserData.name,
-          messageType: messageEnum);
+        reciverUserId: reciverUserid,
+        text: fileUrl,
+        timeSent: timeSent,
+        messageId: messageId,
+        userName: senderUserData.name,
+        reviverUserName: reciverUserData.name,
+        messageType: messageEnum,
+        messageReplay: messageReplay,
+        receiverUserName: reciverUserData.name,
+        senderUserName: senderUserData.name,
+      );
     } catch (e) {
       showSnakBar(context: context, content: e.toString());
     }
@@ -233,7 +256,8 @@ class ChatRepository {
       {required BuildContext context,
       required String gifUrl,
       required String recieverUserId,
-      required UserModel senderUser}) async {
+      required UserModel senderUser,
+      required MessageReplay? messageReplay}) async {
     try {
       var timeSent = DateTime.now();
       UserModel reciverUserData;
@@ -249,13 +273,17 @@ class ChatRepository {
         recieverUserId,
       );
       _saveMessageToMessageSubcollection(
-          reciverUserId: recieverUserId,
-          text: gifUrl,
-          timeSent: timeSent,
-          messageId: messageId,
-          userName: senderUser.name,
-          reviverUserName: reciverUserData.name,
-          messageType: MessageEnum.gif);
+        reciverUserId: recieverUserId,
+        text: gifUrl,
+        timeSent: timeSent,
+        messageId: messageId,
+        userName: senderUser.name,
+        reviverUserName: reciverUserData.name,
+        messageType: MessageEnum.gif,
+        messageReplay: messageReplay,
+        receiverUserName: reciverUserData.name,
+        senderUserName: senderUser.name,
+      );
     } catch (e) {
       showSnakBar(context: context, content: e.toString());
     }

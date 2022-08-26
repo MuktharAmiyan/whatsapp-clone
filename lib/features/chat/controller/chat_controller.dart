@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
+import 'package:whatsapp_ui/common/providers/message_replay_provider.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 
 import 'package:whatsapp_ui/features/chat/repository/chat_repository.dart';
@@ -27,13 +28,15 @@ class ChatController {
     String text,
     String recieverUserId,
   ) {
+    final messageReplay = ref.read(messageReplayprovider);
     ref.read(userDataAuthProvider).whenData((value) {
       log(value.toString());
       return chatRepository.sendTextmessage(
           context: context,
           text: text,
           recieverUserId: recieverUserId,
-          senderUser: value!);
+          senderUser: value!,
+          messageReplay: messageReplay);
     });
   }
 
@@ -43,6 +46,7 @@ class ChatController {
     String recieverUserId,
     MessageEnum messageEnum,
   ) {
+    final messageReplay = ref.read(messageReplayprovider);
     ref.read(userDataAuthProvider).whenData((value) {
       log(value.toString());
       return chatRepository.sendFileMessage(
@@ -51,7 +55,8 @@ class ChatController {
           reciverUserid: recieverUserId,
           senderUserData: value!,
           ref: ref,
-          messageEnum: messageEnum);
+          messageEnum: messageEnum,
+          messageReplay: messageReplay);
     });
   }
 
@@ -61,13 +66,14 @@ class ChatController {
     String gifUrlPart = gifUrl.substring(gifUrlPartIndex);
     String NewUrl = "https://i.giphy.com/media/$gifUrlPart/200.gif";
     print(NewUrl);
+    final messageReplay = ref.read(messageReplayprovider);
     ref.read(userDataAuthProvider).whenData(
           (value) => chatRepository.sendGIFmessage(
-            context: context,
-            gifUrl: NewUrl,
-            recieverUserId: revieverUserId,
-            senderUser: value!,
-          ),
+              context: context,
+              gifUrl: NewUrl,
+              recieverUserId: revieverUserId,
+              senderUser: value!,
+              messageReplay: messageReplay),
         );
   }
 

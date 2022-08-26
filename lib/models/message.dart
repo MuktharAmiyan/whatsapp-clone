@@ -1,3 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
+
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
 
 class Message {
@@ -8,6 +11,9 @@ class Message {
   final DateTime timeSent;
   final String messageId;
   final bool isSeen;
+  final String replaiedMessage;
+  final String repliedTo;
+  final MessageEnum replayMessageType;
   Message({
     required this.senderId,
     required this.reviverId,
@@ -16,6 +22,9 @@ class Message {
     required this.timeSent,
     required this.messageId,
     required this.isSeen,
+    required this.replaiedMessage,
+    required this.repliedTo,
+    required this.replayMessageType,
   });
 
   Map<String, dynamic> toMap() {
@@ -27,6 +36,9 @@ class Message {
       'timeSent': timeSent.millisecondsSinceEpoch,
       'messageId': messageId,
       'isSeen': isSeen,
+      'replaiedMessage': replaiedMessage,
+      'repliedTo': repliedTo,
+      'replayMessageType': replayMessageType.type,
     };
   }
 
@@ -39,6 +51,9 @@ class Message {
       timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent'] as int),
       messageId: map['messageId'] as String,
       isSeen: map['isSeen'] as bool,
+      replaiedMessage: map['replaiedMessage'] as String,
+      repliedTo: map['repliedTo'] as String,
+      replayMessageType: (map['replayMessageType'] as String).toEnum(),
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
@@ -14,6 +15,8 @@ class DisplayTextImageGif extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool ispalying = false;
+    final AudioPlayer audioPlayer = AudioPlayer();
     return type == MessageEnum.text
         ? Text(
             message,
@@ -23,8 +26,28 @@ class DisplayTextImageGif extends StatelessWidget {
           )
         : type == MessageEnum.video
             ? VideoPlayerItem(videoUrl: message)
-            : type == MessageEnum.gif
-                ? CachedNetworkImage(imageUrl: message)
+            : type == MessageEnum.audio
+                ? StatefulBuilder(builder: (context, setState) {
+                    return IconButton(
+                        onPressed: () async {
+                          !ispalying
+                              ? {
+                                  await audioPlayer.play(UrlSource(message)),
+                                  setState(() {
+                                    ispalying = true;
+                                  })
+                                }
+                              : {
+                                  await audioPlayer.pause(),
+                                  setState(() {
+                                    ispalying = false;
+                                  })
+                                };
+                        },
+                        icon: Icon(ispalying
+                            ? Icons.pause_circle
+                            : Icons.play_circle));
+                  })
                 : CachedNetworkImage(imageUrl: message);
   }
 }

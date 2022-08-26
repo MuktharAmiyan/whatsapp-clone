@@ -7,10 +7,21 @@ class MyMessageCard extends StatelessWidget {
   final String message;
   final String date;
   final MessageEnum type;
+  final VoidCallback onLeftSwipe;
+  final String replayText;
+  final String replayUserName;
+  final MessageEnum replayMessageType;
 
-  const MyMessageCard(
-      {Key? key, required this.message, required this.date, required this.type})
-      : super(key: key);
+  const MyMessageCard({
+    Key? key,
+    required this.message,
+    required this.date,
+    required this.type,
+    required this.onLeftSwipe,
+    required this.replayText,
+    required this.replayUserName,
+    required this.replayMessageType,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,8 +29,7 @@ class MyMessageCard extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: ConstrainedBox(
         constraints: BoxConstraints(
-            maxWidth: MediaQuery.of(context).size.width - 45,
-            minWidth: MediaQuery.of(context).size.width * .3),
+            maxWidth: MediaQuery.of(context).size.width - 45, minWidth: 100),
         child: Card(
           elevation: 1,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
