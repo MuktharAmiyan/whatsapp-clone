@@ -38,6 +38,7 @@ class ChatController {
           senderUser: value!,
           messageReplay: messageReplay);
     });
+    ref.read(messageReplayprovider.state).update((state) => null);
   }
 
   void sendFileMessage(
@@ -58,6 +59,7 @@ class ChatController {
           messageEnum: messageEnum,
           messageReplay: messageReplay);
     });
+    ref.read(messageReplayprovider.state).update((state) => null);
   }
 
   void sendGIFMessage(
@@ -75,6 +77,7 @@ class ChatController {
               senderUser: value!,
               messageReplay: messageReplay),
         );
+    ref.read(messageReplayprovider.state).update((state) => null);
   }
 
   Stream<List<ChatContact>> chatContacts() {
@@ -83,5 +86,17 @@ class ChatController {
 
   Stream<List<Message>> chatStream(String reciverUserId) {
     return chatRepository.getChatStream(reciverUserId);
+  }
+
+  void setChatMessageSeen(
+    BuildContext context,
+    String receiverUserId,
+    String messageId,
+  ) {
+    chatRepository.setChatMessageSeen(
+      context,
+      receiverUserId,
+      messageId,
+    );
   }
 }

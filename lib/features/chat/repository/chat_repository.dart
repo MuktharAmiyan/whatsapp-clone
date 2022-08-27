@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -284,6 +285,31 @@ class ChatRepository {
         receiverUserName: reciverUserData.name,
         senderUserName: senderUser.name,
       );
+    } catch (e) {
+      showSnakBar(context: context, content: e.toString());
+    }
+  }
+
+  void setChatMessageSeen(
+      BuildContext context, String receiverUserId, String messageId) async {
+    try {
+      await firestore
+          .collection('users')
+          .doc(auth.currentUser!.uid)
+          .collection('chats')
+          .doc(receiverUserId)
+          .collection('messages')
+          .doc(messageId)
+          .update({'isSeen': true});
+
+      await firestore
+          .collection('users')
+          .doc(receiverUserId)
+          .collection('chats')
+          .doc(auth.currentUser!.uid)
+          .collection('messages')
+          .doc(messageId)
+          .update({'isSeen': true});
     } catch (e) {
       showSnakBar(context: context, content: e.toString());
     }

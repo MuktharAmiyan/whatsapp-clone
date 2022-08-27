@@ -48,6 +48,9 @@ class DisplayTextImageGif extends StatelessWidget {
                             ? Icons.pause_circle
                             : Icons.play_circle));
                   })
-                : CachedNetworkImage(imageUrl: message);
+                : CachedNetworkImage(
+                    imageUrl: message,
+                    fit: BoxFit.fitHeight,
+                  );
   }
 }
